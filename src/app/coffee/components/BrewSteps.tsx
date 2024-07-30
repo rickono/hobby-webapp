@@ -3,10 +3,7 @@
 import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import { BrewStep } from '@/lib/queries'
 import { agitationTypeString } from '../lib/util'
-
-function classNames(...classes: string[]) {
-    return classes.filter(Boolean).join(' ')
-}
+import { classNames } from '@/lib/util'
 
 function durationString(seconds: number): string {
     return new Date(1000 * seconds).toISOString().substr(14, 5)

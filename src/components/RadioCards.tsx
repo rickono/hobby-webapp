@@ -1,10 +1,7 @@
 import { useState } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import { CheckCircleIcon } from '@heroicons/react/20/solid'
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
+import { classNames } from '@/lib/util'
 
 type Props = {
     name: string

@@ -4,10 +4,7 @@ import { CheckCircleIcon } from '@heroicons/react/24/solid'
 import { BrewStep } from '@/lib/queries'
 import { Database } from '@/types/supabase'
 import { durationString } from '@/app/coffee/lib/util'
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
+import { classNames } from '@/lib/util'
 
 type Props = {
     steps: Array<BrewStep>

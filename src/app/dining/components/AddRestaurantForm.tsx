@@ -38,6 +38,7 @@ import { Button } from '@/components/Button'
 import AddRestaurantBasicSection from './AddRestaurantBasicSection'
 import { LaListeAward, displayLaListeAward } from './LaListe'
 import GoogleMap from './GoogleMap'
+import { classNames } from '@/lib/util'
 
 export type AwardInfo =
   | {
@@ -386,9 +387,6 @@ function AddFiftyBest({ onSave }: AddFiftyBestProps) {
   )
 }
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
 
 function michelinRadioClassName({
   active,

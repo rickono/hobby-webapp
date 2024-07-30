@@ -2,10 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-
-function classNames(...classes: Array<string>) {
-    return classes.filter(Boolean).join(' ')
-}
+import { classNames } from '@/lib/util'
 
 type Props = {
     cards: Array<{

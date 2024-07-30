@@ -23,7 +23,7 @@ function coffeeZone(tds: number, ey: number): string {
     if (extraction === strength) {
         return 'ideal'
     }
-    return `${strength} ${extraction}`.trim()
+    return `${strength} and ${extraction}`.trim()
 }
 
 export default function PurePercolation() {
@@ -67,36 +67,41 @@ export default function PurePercolation() {
                     type="number"
                     label="Concentration (TDS %)"
                     id="c"
+                    name="c"
                     value={c}
-                    setValue={setC}
+                    onChange={e => setC(e.target.value)}
                 />
                 <Input
                     type="number"
                     label="Beverage weight"
                     id="b"
+                    name="b"
                     value={b}
-                    setValue={setB}
+                    onChange={e => setB(e.target.value)}
                 />
                 <Input
                     type="number"
                     label="Dry coffee dose"
                     id="d"
+                    name="d"
                     value={d}
-                    setValue={setD}
+                    onChange={e => setD(e.target.value)}
                 />
                 <Input
                     type="number"
                     label="Brew water weight"
                     id="w"
+                    name="w"
                     value={w}
-                    setValue={setW}
+                    onChange={e => setW(e.target.value)}
                 />
                 {method === 'percolation' && <Input
                     type="number"
                     label="Slurry concentration"
                     id="c_s"
+                    name="c_s"
                     value={cSlurry}
-                    setValue={setCSlurry}
+                    onChange={e => setCSlurry(e.target.value)}
                 />}
             </div>
             <DataDisplay title="Results" stats={[

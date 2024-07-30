@@ -19,10 +19,7 @@ import {
 } from 'react-hook-form'
 import { FormInfo } from '../log/[new]/NewBrewForm'
 import SimpleCards from '@/components/SimpleCards'
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
+import { classNames } from '@/lib/util'
 
 function durationString(seconds: number): string {
     return new Date(1000 * seconds).toISOString().substr(14, 5)
