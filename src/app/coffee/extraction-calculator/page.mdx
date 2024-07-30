@@ -1,0 +1,39 @@
+import { ArticleLayout } from '@/components/ArticleLayout'
+import Image from 'next/image'
+import 'katex/dist/katex.min.css';
+import { BlockMath, InlineMath } from 'react-katex'
+import PurePercolation from './pure-percolation'
+
+export const article = {
+  author: 'Adam Wathan',
+  date: '2022-09-01',
+  title: 'Coffee Extraction Calculator',
+  description:
+    'Most companies try to stay ahead of the curve when it comes to visual design, but for Planetaria we needed to create a brand that would still inspire us 100 years from now when humanity has spread across our entire solar system.',
+}
+
+export const metadata = {
+  title: article.title,
+  description: article.description,
+}
+
+export default (props) => <ArticleLayout article={article} {...props} />
+
+## Standard equations
+
+The standard extraction equations are simple and useful for comparing results with others.
+
+For percolation, the equation is <InlineMath>{'EY =\\frac{CB}{D}'}</InlineMath> and for immersion it is <InlineMath>{'EY=\\frac{CW}{D}'}</InlineMath>.
+
+## Immersion
+
+<BlockMath>{'EY =\\frac{C}{1-C}(\\frac{W}{D}-f_{abs})'}</BlockMath>
+
+## Percolation
+
+<BlockMath>{'EY=\\frac{C_{beverage}-C_{slurry}}{1-C_{slurry}}\\cdot\\frac{B}{D}+\\frac{C_{slurry}}{1-C_{slurry}}(\\frac{W}{D}-f_{abs})'}</BlockMath>
+
+This calculator currently uses the LRR, <InlineMath>{'\\frac{W-B}{D}'}</InlineMath> as an estimate for <InlineMath>{'f_{abs}'}</InlineMath>.
+
+<PurePercolation />
+
