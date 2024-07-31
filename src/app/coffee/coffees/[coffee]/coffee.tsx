@@ -1,3 +1,5 @@
+"use server"
+
 const stats = [
     { label: 'Origin', value: 'Honduras' },
     { label: 'Region', value: 'Santa Bárbara' },

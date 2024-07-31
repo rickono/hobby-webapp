@@ -1,3 +1,5 @@
+"use server"
+
 import { Button } from '@/components/Button'
 import { SimpleLayout } from '@/components/SimpleLayout'
 import StackedList from '@/components/StackedList'

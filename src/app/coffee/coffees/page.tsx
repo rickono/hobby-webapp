@@ -1,3 +1,5 @@
+"use server"
+
 import LogoCards from '@/components/LogoCards'
 import { Container } from '@/components/Container'
 import { SimpleLayout } from '@/components/SimpleLayout'

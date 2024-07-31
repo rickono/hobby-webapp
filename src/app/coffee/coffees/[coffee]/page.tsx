@@ -1,3 +1,5 @@
+"use server"
+
 import { getCoffee, Coffee } from "@/lib/queries"
 
 import Image from "next/image"

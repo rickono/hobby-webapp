@@ -1,7 +1,6 @@
 import {
-  createClientComponentClient,
-  createServerComponentClient,
-} from '@supabase/auth-helpers-nextjs'
+  createServerClient,
+} from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 import { Database, Tables } from '@/types/supabase'
@@ -48,8 +47,35 @@ export type Origin = Tables<'coffee_origins'>
 export type Process = Tables<'coffee_process'>
 export type Variety = Tables<'coffee_variety'>
 
+export function createClient() {
+  const cookieStore = cookies()
+
+  return createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll()
+        },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {
+            // The `setAll` method was called from a Server Component.
+            // This can be ignored if you have middleware refreshing
+            // user sessions.
+          }
+        },
+      },
+    }
+  )
+}
+
 export async function getCoffee(id: string): Promise<Coffee | null> {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('coffee_coffees')
     .select('*, roaster ( name ), origin ( name ), process ( name )')
@@ -62,7 +88,7 @@ export async function getCoffee(id: string): Promise<Coffee | null> {
 }
 
 export async function getCoffees(): Promise<Coffee[]> {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('coffee_coffees')
     .select('*, roaster ( name, logo_url ), origin ( name ), process ( name )')
@@ -73,14 +99,14 @@ export async function getCoffees(): Promise<Coffee[]> {
 }
 
 export async function getBrewers(): Promise<Tables<'coffee_brewer'>[]> {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createClient()
   const { data, error } = await supabase.from('coffee_brewer').select()
   if (!data || error) return []
   return data
 }
 
 export async function getRecipes(): Promise<Recipe[]> {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('coffee_log_recipe')
     .select(
@@ -104,7 +130,7 @@ export async function getRecipes(): Promise<Recipe[]> {
 }
 
 export async function getRecipe(id: number): Promise<Recipe | null> {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('coffee_log_recipe')
     .select('*, brew ( *, coffee_log_brew_step ( * ) )')
@@ -118,7 +144,7 @@ export async function getRecipe(id: number): Promise<Recipe | null> {
 }
 
 export async function getLogCoffees(): Promise<LogCoffee[]> {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('coffee_log_beans')
     .select('*, coffee ( *, roaster ( name ) )')
@@ -152,7 +178,7 @@ export type Award = Omit<
 export async function getRestaurants(options?: {
   fields: ('cuisine' | 'award')[]
 }): Promise<Restaurant[]> {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createClient()
   let select = '*, city ( * ), neighborhood ( * )'
   if (options?.fields?.includes('cuisine')) {
       select += ', dining_cuisine ( * )'
@@ -171,7 +197,7 @@ export async function getRestaurants(options?: {
 }
 
 export async function getCities(): Promise<City[]> {
-  const supabase = createServerComponentClient<Database>({ cookies })
+  const supabase = createClient()
   const { data, error } = await supabase
     .from('dining_city')
     .select('*')
@@ -183,10 +209,10 @@ export async function getCities(): Promise<City[]> {
 
 export type TableNames = keyof Database['public']['Tables']
 
-const supabase = createServerComponentClient<Database>({ cookies })
-export const db = {
-    coffee: {
-        roaster: supabase.from('coffee_roaster')
-    }
-}
+// const supabase = createClient()
+// export const db = {
+//     coffee: {
+//         roaster: supabase.from('coffee_roaster')
+//     }
+// }
 
