@@ -41,7 +41,7 @@ export default async function Page() {
     return (
         <SimpleLayout
             title="Brew Log"
-            intro="Keep track of your brews to dial in your cup."
+            intro="Keep track of your brews to dial in your cup...  but it doesn't work yet"
         >
             <div className="flex flex-col w-full gap-12">
                 <DashboardItem header="Recent Brews">
