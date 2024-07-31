@@ -54,7 +54,7 @@ export default function RecipeSteps({ steps }: Props) {
         <>
             <ul role="list" className="space-y-6 max-w-xs">
                 {steps.map((step, stepIdx) => (
-                    <li key={step.step_no} className="relative flex gap-x-4">
+                    <li key={stepIdx} className="relative flex gap-x-4">
                         <div
                             className={classNames(
                                 stepIdx === steps.length - 1 ? 'h-6' : '-bottom-6',

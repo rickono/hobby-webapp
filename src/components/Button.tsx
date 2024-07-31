@@ -39,16 +39,16 @@ export function IconButton({
   variant = 'primary',
   className,
   children = <PlusIcon className="h-3 w-3" aria-hidden="true" />,
-  ...rest
+  ...props
 }: ButtonProps) {
   className = clsx(
     variantStyles[variant],
     className,
     'rounded-full p-1 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 transition',
   )
-  return (
-    <button type="button" className={className} {...rest}>
-      {children}
-    </button>
+  return typeof props.href === 'undefined' ? (
+    <button className={className} {...props} type="button" />
+  ) : (
+    <Link className={className} {...props} />
   )
 }

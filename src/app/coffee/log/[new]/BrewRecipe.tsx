@@ -94,7 +94,7 @@ export default function BrewRecipe({
                             (acc, cur) => (cur.water_grams || 0) + acc,
                             0,
                         )
-                        const newTotalWater = getValues('details.dose') * parseFloat(ratio)
+                        const newTotalWater = parseFloat(getValues('details.dose')) * parseFloat(ratio)
                         setValue(
                             'details.steps',
                             steps?.map((step) => ({

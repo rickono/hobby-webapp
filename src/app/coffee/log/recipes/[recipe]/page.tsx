@@ -11,7 +11,7 @@ export default async function Page({ params }: Props) {
     if (!recipe) return null
     return (
         <SimpleLayout title={recipe.name} intro="This recipe is good">
-            {recipe.brew.coffee_log_brew_step && <RecipeSteps steps={recipe.brew.coffee_log_brew_step} />}
+            {recipe.details.coffee_log_brew_step && <RecipeSteps steps={recipe.details.coffee_log_brew_step} />}
         </SimpleLayout>
     )
 }

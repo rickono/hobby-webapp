@@ -4,31 +4,16 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { classNames } from '@/lib/util'
 import clsx from 'clsx'
 
-const people = [
-  { name: 'Wade Cooper', username: '@wadecooper' },
-  { name: 'Arlene Mccoy', username: '@arlenemccoy' },
-  { name: 'Devon Webb', username: '@devonwebb' },
-  { name: 'Tom Cook', username: '@tomcook' },
-  { name: 'Tanya Fox', username: '@tanyafox' },
-  { name: 'Hellen Schmidt', username: '@hellenschmidt' },
-  { name: 'Caroline Schultz', username: '@carolineschultz' },
-  { name: 'Mason Heaney', username: '@masonheaney' },
-  { name: 'Claudie Smitham', username: '@claudiesmitham' },
-  { name: 'Emil Schaefer', username: '@emilschaefer' },
-]
-
 export type SelectOption<T> = {
   label: React.ReactNode
   value: T
   helper?: string
 }
 
-type DefaultSelect = { label: string; value: ''; helper: '' }
-
 type Props<T> = {
   label: string
   options: SelectOption<T>[]
-  onChange: (value: SelectOption<T> | DefaultSelect) => void
+  onChange: (value: SelectOption<T>) => void
   defaultValue?: SelectOption<T>
   error?: string
   value?: SelectOption<T>
@@ -45,8 +30,8 @@ export default function Select<T = string>({
   placeholder = 'Please select an option',
 }: Props<T>) {
   const [selected, setSelected] = useState<
-    SelectOption<T> | DefaultSelect | undefined
-  >(defaultValue || { label: placeholder, value: '', helper: '' })
+    SelectOption<T> | undefined
+  >(defaultValue)
 
   useEffect(() => {
     if (value) {

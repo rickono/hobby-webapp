@@ -181,7 +181,7 @@ export default function EditSteps({
     useEffect(() => {
         setRatio(
             steps?.reduce((acc, cur) => acc + (cur.water_grams ?? 0), 0) /
-            getValues('details.dose'),
+            parseFloat(getValues('details.dose')),
         )
     }, [steps, getValues])
 

@@ -7,7 +7,7 @@ export default async function Page() {
     const recipes = await getRecipes()
     const display = recipes.map((recipe: Recipe) => ({
         title: recipe.name,
-        subtitle: recipe.brew?.brew_method?.name,
+        // subtitle: recipe.details?.brewer?.name,
         link: `/coffee/log/recipes/${recipe.id.toString()}`
     }))
     return (
