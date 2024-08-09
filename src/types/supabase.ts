@@ -60,7 +60,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "coffee_variety"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       coffee_coffees: {
@@ -136,7 +136,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "coffee_roaster"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       coffee_log_beans: {
@@ -171,7 +171,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "coffee_coffees"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       coffee_log_brew: {
@@ -213,7 +213,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "coffee_log_brew_details"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       coffee_log_brew_details: {
@@ -242,7 +242,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "coffee_brewer"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       coffee_log_brew_step: {
@@ -295,7 +295,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "coffee_log_brew_details"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       coffee_log_recipe: {
@@ -324,7 +324,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "coffee_log_brew_details"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       coffee_origins: {
@@ -402,6 +402,181 @@ export type Database = {
         }
         Relationships: []
       }
+      culinary_ingredient: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
+      culinary_ingredient_category: {
+        Row: {
+          category: number
+          created_at: string
+          id: number
+          ingredient: number
+        }
+        Insert: {
+          category: number
+          created_at?: string
+          id?: number
+          ingredient: number
+        }
+        Update: {
+          category?: number
+          created_at?: string
+          id?: number
+          ingredient?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "culinary_ingredient_category_category_fkey"
+            columns: ["category"]
+            isOneToOne: false
+            referencedRelation: "culinary_ingredient"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "culinary_ingredient_category_ingredient_fkey"
+            columns: ["ingredient"]
+            isOneToOne: false
+            referencedRelation: "culinary_ingredient"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      culinary_recipe: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
+      culinary_recipe_ingredient: {
+        Row: {
+          alternative: Json | null
+          created_at: string
+          display_name: string
+          id: number
+          ingredient: number
+          optional: boolean
+          quantity: number | null
+          recipe: number
+          unit: number | null
+        }
+        Insert: {
+          alternative?: Json | null
+          created_at?: string
+          display_name: string
+          id?: number
+          ingredient: number
+          optional?: boolean
+          quantity?: number | null
+          recipe: number
+          unit?: number | null
+        }
+        Update: {
+          alternative?: Json | null
+          created_at?: string
+          display_name?: string
+          id?: number
+          ingredient?: number
+          optional?: boolean
+          quantity?: number | null
+          recipe?: number
+          unit?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "culinary_recipe_ingredient_ingredient_fkey"
+            columns: ["ingredient"]
+            isOneToOne: false
+            referencedRelation: "culinary_ingredient"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "culinary_recipe_ingredient_recipe_fkey"
+            columns: ["recipe"]
+            isOneToOne: false
+            referencedRelation: "culinary_recipe"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "culinary_recipe_ingredient_unit_fkey"
+            columns: ["unit"]
+            isOneToOne: false
+            referencedRelation: "culinary_unit"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      culinary_recipe_source: {
+        Row: {
+          author: string | null
+          created_at: string
+          id: number
+          name: string
+        }
+        Insert: {
+          author?: string | null
+          created_at?: string
+          id?: number
+          name: string
+        }
+        Update: {
+          author?: string | null
+          created_at?: string
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
+      culinary_unit: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          std: number | null
+          type: Database["public"]["Enums"]["culinary_unit_type"] | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          name: string
+          std?: number | null
+          type?: Database["public"]["Enums"]["culinary_unit_type"] | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          name?: string
+          std?: number | null
+          type?: Database["public"]["Enums"]["culinary_unit_type"] | null
+        }
+        Relationships: []
+      }
       dining_award: {
         Row: {
           award: Json | null
@@ -438,7 +613,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "dining_restaurants"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       dining_award_type: {
@@ -524,7 +699,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "dining_city"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       dining_restaurant_cuisine: {
@@ -557,7 +732,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "dining_restaurants"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       dining_restaurants: {
@@ -617,7 +792,7 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "dining_neighborhood"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
     }
@@ -636,6 +811,7 @@ export type Database = {
         | "immersion"
         | "release"
         | "finish"
+      culinary_unit_type: "volume" | "weight"
       dining_meal: "breakfast" | "lunch" | "dinner" | "brunch"
       dining_menus:
         | "breakfast_a_la_carte"
@@ -661,14 +837,16 @@ export type Database = {
   }
 }
 
+type PublicSchema = Database[Extract<keyof Database, "public">]
+
 export type Tables<
   PublicTableNameOrOptions extends
-    | keyof (Database["public"]["Tables"] & Database["public"]["Views"])
+    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
         Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
@@ -676,67 +854,67 @@ export type Tables<
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
-      Database["public"]["Views"])
-  ? (Database["public"]["Tables"] &
-      Database["public"]["Views"])[PublicTableNameOrOptions] extends {
-      Row: infer R
-    }
-    ? R
+  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
+        PublicSchema["Views"])
+    ? (PublicSchema["Tables"] &
+        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
     : never
-  : never
 
 export type TablesInsert<
   PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
+    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
-      Insert: infer I
-    }
-    ? I
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
     : never
-  : never
 
 export type TablesUpdate<
   PublicTableNameOrOptions extends
-    | keyof Database["public"]["Tables"]
+    | keyof PublicSchema["Tables"]
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
-  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
-      Update: infer U
-    }
-    ? U
+  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
     : never
-  : never
 
 export type Enums<
   PublicEnumNameOrOptions extends
-    | keyof Database["public"]["Enums"]
+    | keyof PublicSchema["Enums"]
     | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
-    : never = never
+    : never = never,
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
-  ? Database["public"]["Enums"][PublicEnumNameOrOptions]
-  : never
+  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
+    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never

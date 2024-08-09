@@ -1,6 +1,13 @@
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database, Tables } from '@/types/supabase'
-import { Award, BrewDetails, Restaurant, TableNames } from './queries'
+import {
+  Award,
+  BrewDetails,
+  createClient,
+  Ingredient,
+  Restaurant,
+  TableNames,
+} from './queries'
 import { PostgrestSingleResponse } from '@supabase/supabase-js'
 
 export async function insertBrewDetails(brewDetails: Partial<BrewDetails>) {
@@ -33,7 +40,6 @@ export function getId<T extends number | undefined | { id: number }>(
   return object.id
 }
 
-
 export function getIdString<T extends string | undefined | { id: string }>(
   object: T,
 ): string | undefined {
@@ -45,7 +51,6 @@ export function getIdString<T extends string | undefined | { id: string }>(
   }
   return object.id
 }
-
 
 export async function getDataClient<T>(
   from: TableNames,
@@ -87,21 +92,24 @@ export async function insertAward(award: Partial<Award>) {
   const res = await supabase
     .from('dining_award')
     .insert({
-        award_type: getId(award.award_type),
-        restaurant: getId(award.restaurant),
-        award: award.award,
+      award_type: getId(award.award_type),
+      restaurant: getId(award.restaurant),
+      award: award.award,
     })
     .select('*')
   return res
 }
 
-export async function insertRestaurantCuisine(cuisine: number, restaurant: number) {
+export async function insertRestaurantCuisine(
+  cuisine: number,
+  restaurant: number,
+) {
   const supabase = createClientComponentClient<Database>()
   const res = await supabase
     .from('dining_restaurant_cuisine')
     .insert({
-        cuisine,
-        restaurant,
+      cuisine,
+      restaurant,
     })
     .select('*')
   return res
@@ -112,35 +120,64 @@ export async function insertCity(cityId: string, name: string) {
   const res = await supabase
     .from('dining_city')
     .upsert({
-        id: cityId,
-        name,
+      id: cityId,
+      name,
     })
     .select('*')
   return res
 }
 
-export async function insertNeighborhood(neighborhoodId: string, cityId: string, name: string) {
+export async function insertNeighborhood(
+  neighborhoodId: string,
+  cityId: string,
+  name: string,
+) {
   const supabase = createClientComponentClient<Database>()
   const res = await supabase
     .from('dining_neighborhood')
     .upsert({
-        id: neighborhoodId,
-        city: cityId,
-        name,
+      id: neighborhoodId,
+      city: cityId,
+      name,
     })
     .select('*')
   return res
 }
 
-const supabase = createClientComponentClient<Database>()
-export const db = {
-    coffee: {
-        coffee: supabase.from('coffee_coffees'),
-        roaster: supabase.from('coffee_roaster'),
-        origin: supabase.from('coffee_origins'),
-        process: supabase.from('coffee_process'),
-        variety: supabase.from('coffee_variety'),
-        coffee_variety: supabase.from('coffee_coffee_variety')
-    }
+export async function getIngredients() {
+  const supabase = createClientComponentClient<Database>()
+  const res = await supabase.from('culinary_ingredient').select()
+  return res
 }
 
+export async function getRootIngredients() {
+  const supabase = createClientComponentClient<Database>()
+  const res = await supabase
+    .from('culinary_ingredient_category')
+    .select(`ingredient ( id, name )`)
+    .is('category', null)
+    .returns<{ ingredient: Ingredient }[]>()
+  return res.data?.map(({ ingredient }) => ingredient)
+}
+
+export async function getIngredientsInCategory(category: number) {
+  const supabase = createClientComponentClient<Database>()
+  const res = await supabase
+    .from('culinary_ingredient_category')
+    .select(`ingredient ( id, name )`)
+    .eq('category', category)
+    .returns<{ ingredient: Ingredient }[]>()
+  return res.data?.map(({ ingredient }) => ingredient)
+}
+
+const supabase = createClientComponentClient<Database>()
+export const db = {
+  coffee: {
+    coffee: supabase.from('coffee_coffees'),
+    roaster: supabase.from('coffee_roaster'),
+    origin: supabase.from('coffee_origins'),
+    process: supabase.from('coffee_process'),
+    variety: supabase.from('coffee_variety'),
+    coffee_variety: supabase.from('coffee_coffee_variety'),
+  },
+}

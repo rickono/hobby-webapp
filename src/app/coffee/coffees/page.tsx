@@ -1,4 +1,4 @@
-"use server"
+'use server'
 
 import LogoCards from '@/components/LogoCards'
 import { Container } from '@/components/Container'
@@ -20,7 +20,6 @@ export default async function Page() {
       process: coffee.process?.name ?? '',
     },
   }))
-
 
   return (
     <SimpleLayout title="Coffees" intro="Some coffees I've been drinking.">

@@ -1,6 +1,4 @@
-import {
-  createServerClient,
-} from '@supabase/ssr'
+import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
 import { Database, Tables } from '@/types/supabase'
@@ -61,7 +59,7 @@ export function createClient() {
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, options),
             )
           } catch {
             // The `setAll` method was called from a Server Component.
@@ -70,7 +68,7 @@ export function createClient() {
           }
         },
       },
-    }
+    },
   )
 }
 
@@ -181,10 +179,10 @@ export async function getRestaurants(options?: {
   const supabase = createClient()
   let select = '*, city ( * ), neighborhood ( * )'
   if (options?.fields?.includes('cuisine')) {
-      select += ', dining_cuisine ( * )'
+    select += ', dining_cuisine ( * )'
   }
   if (options?.fields?.includes('award')) {
-      select += ', dining_award ( * )'
+    select += ', dining_award ( * )'
   }
 
   const { data, error } = await supabase
@@ -207,6 +205,39 @@ export async function getCities(): Promise<City[]> {
   return data
 }
 
+export async function getIngredients(): Promise<Ingredient[]> {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('culinary_ingredient')
+    .select()
+    .returns<Ingredient[]>()
+
+  if (!data || error) return []
+  return data
+}
+
+export async function getRootIngredients() {
+  const supabase = createClient()
+  const res = await supabase
+    .from('culinary_ingredient_category')
+    .select(`ingredient ( id, name )`)
+    .is('category', null)
+    .returns<{ ingredient: Ingredient }[]>()
+  return res.data?.map(({ ingredient }) => ingredient)
+}
+
+export async function getIngredientsInCategory(category: number) {
+  const supabase = createClient()
+  const res = await supabase
+    .from('culinary_ingredient_category')
+    .select(`ingredient ( id, name )`)
+    .eq('category', category)
+    .returns<{ ingredient: Ingredient }[]>()
+  return res.data?.map(({ ingredient }) => ingredient)
+}
+
+export type Ingredient = Tables<'culinary_ingredient'>
+
 export type TableNames = keyof Database['public']['Tables']
 
 // const supabase = createClient()
@@ -215,4 +246,3 @@ export type TableNames = keyof Database['public']['Tables']
 //         roaster: supabase.from('coffee_roaster')
 //     }
 // }
-

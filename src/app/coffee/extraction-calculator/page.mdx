@@ -1,8 +1,5 @@
 import { ArticleLayout } from '@/components/ArticleLayout'
 import Image from 'next/image'
-import 'katex/dist/katex.min.css';
-import { BlockMath, InlineMath } from 'react-katex'
-import PurePercolation from './pure-percolation'
 
 export const article = {
   author: 'Adam Wathan',
@@ -31,9 +28,12 @@ For percolation, the equation is <InlineMath>{'EY =\\frac{CB}{D}'}</InlineMath> 
 
 ## Percolation
 
-<BlockMath>{'EY=\\frac{C_{beverage}-C_{slurry}}{1-C_{slurry}}\\cdot\\frac{B}{D}+\\frac{C_{slurry}}{1-C_{slurry}}(\\frac{W}{D}-f_{abs})'}</BlockMath>
+<BlockMath>
+  {
+    'EY=\\frac{C_{beverage}-C_{slurry}}{1-C_{slurry}}\\cdot\\frac{B}{D}+\\frac{C_{slurry}}{1-C_{slurry}}(\\frac{W}{D}-f_{abs})'
+  }
+</BlockMath>
 
-This calculator currently uses the LRR, <InlineMath>{'\\frac{W-B}{D}'}</InlineMath> as an estimate for <InlineMath>{'f_{abs}'}</InlineMath>.
+This calculator currently uses the LRR, <InlineMath>{'\\frac{W-B}{D}'}</InlineMath> as an estimate for <InlineMath>{'f\_{abs}'}</InlineMath>.
 
 <PurePercolation />
-

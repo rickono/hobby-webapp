@@ -26,9 +26,11 @@ export function Card<T extends React.ElementType = 'div'>({
 
   return (
     <Component
-      className={clsx(className, 'group relative flex flex-col items-start')}
+      className={clsx(className, 'group relative flex flex-col items-start overflow-hidden rounded-lg bg-white shadow')}
     >
-      {children}
+      <div className="px-4 py-5 sm:p-6">
+        {children}
+      </div>
     </Component>
   )
 }

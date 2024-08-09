@@ -42,7 +42,9 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.49.2",
     "react-katex": "^3.0.1",
+    "rehype-slug": "^6.0.0",
     "remark-gfm": "^3.0.1",
+    "remark-toc": "^9.0.0",
     "tailwindcss": "^3.3.3",
     "typescript": "5.1.6",
     "webpack-node-externals": "^3.0.0"
@@ -58,6 +60,6 @@
     "prettier": "^3.0.1",
     "prettier-plugin-tailwindcss": "^0.5.2",
     "sharp": "^0.32.0",
-    "supabase": "^1.123.4"
+    "supabase": "^1.187.10"
   }
 }
