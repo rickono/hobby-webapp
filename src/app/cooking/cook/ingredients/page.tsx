@@ -33,7 +33,7 @@ export default function Page() {
 
   return (
     <SimpleLayout title="Ingredients" intro="Explore recipes or ingredients.">
-      <Input
+      {/* <Input
         type="text"
         name="ingredient-search"
         label="Search all ingredients"
@@ -41,7 +41,7 @@ export default function Page() {
         onChange={() => {
           handleSearch()
         }}
-      />
+      /> */}
       <Grid className="mt-12">
         {ingredients.map((ingredient) => (
           <GridItem xs={6} key={ingredient.id}>

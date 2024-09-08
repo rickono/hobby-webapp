@@ -1,45 +1,50 @@
-const people = [
-    {
-        name: 'Parlor El Pino',
-        email: 'December 18',
-        role: 'Tetsu Kasuya\'s 4:6 Method',
-        imageUrl:
-            'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-        lastSeen: '3h ago',
-        lastSeenDateTime: '2023-01-23T13:23Z',
-    },
-]
+import { ChevronRightIcon } from '@heroicons/react/20/solid'
+import { FC } from 'react'
 
-export default function StackedList() {
-    return (
-        <ul role="list" className="divide-y divide-gray-100">
-            {people.map((person) => (
-                <li key={person.email} className="flex justify-between gap-x-6 py-5">
-                    <div className="flex min-w-0 gap-x-4">
-                        {/* <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={person.imageUrl} alt="" /> */}
-                        <div className="min-w-0 flex-auto">
-                            <p className="text-sm font-semibold leading-6 text-gray-900">{person.name}</p>
-                            <p className="mt-1 truncate text-xs leading-5 text-gray-500">{person.email}</p>
-                        </div>
-                    </div>
-                    <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-                        <p className="text-sm leading-6 text-gray-900">{person.role}</p>
-                        {person.lastSeen ? (
-                            <p className="mt-1 text-xs leading-5 text-gray-500">
-                                Last seen <time dateTime={person.lastSeenDateTime}>{person.lastSeen}</time>
-                            </p>
-                        ) : (
-                            <div className="mt-1 flex items-center gap-x-1.5">
-                                <div className="flex-none rounded-full bg-emerald-500/20 p-1">
-                                    <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                                </div>
-                                <p className="text-xs leading-5 text-gray-500">Online</p>
-                            </div>
-                        )}
-                    </div>
-                </li>
-            ))}
-        </ul>
-    )
+interface Props {
+  items: {
+    title: string
+    href: string
+    key?: string
+  }[]
+  emptyText?: string
 }
 
+export const StackedList: FC<Props> = ({ items, emptyText = 'No items.' }) => {
+  return (
+    <ul
+      role="list"
+      className="divide-y divide-gray-100 overflow-hidden bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl"
+    >
+      {items.length !== 0 ? (
+        items.map(({ title, href, key }) => (
+          <li
+            key={key ?? title}
+            className="relative flex justify-between gap-x-6 px-4 py-3 hover:bg-gray-50 sm:px-6"
+          >
+            <div className="flex min-w-0 gap-x-4">
+              <div className="min-w-0 flex-auto">
+                <p className="text-sm font-semibold leading-6 text-gray-900">
+                  <a href={href}>
+                    <span className="absolute inset-x-0 -top-px bottom-0" />
+                    {title}
+                  </a>
+                </p>
+              </div>
+            </div>
+            <div className="flex shrink-0 items-center gap-x-4">
+              <ChevronRightIcon
+                aria-hidden="true"
+                className="h-5 w-5 flex-none text-gray-400"
+              />
+            </div>
+          </li>
+        ))
+      ) : (
+        <li className="relative flex justify-between gap-x-6 px-4 py-5 text-sm text-gray-500 sm:px-6">
+          {emptyText}
+        </li>
+      )}
+    </ul>
+  )
+}

@@ -9,7 +9,7 @@ export default function Page() {
         <GridItem xs={6}>
           <Card>
             <Card.Title>Recipes</Card.Title>
-            <Card.Description>Explore recipes by category.</Card.Description>
+            <Card.Description>Coming soon</Card.Description>
           </Card>
         </GridItem>
         <GridItem xs={6}>

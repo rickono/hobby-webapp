@@ -1,41 +1,33 @@
 'use client'
 
-import React from 'react'
+import React, { FC } from 'react'
 import { GridItem } from '@/components/Grid'
 import { Card } from '@/components/Card'
 import useSupabaseBrowser from '@/utils/supabase-browser'
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query'
 import { getIngredientsByCategory } from '@/queries/cooking'
+import { StackedList } from '@/components/StackedList'
 
 interface Props {
   parentId: number
   path: string[]
 }
 
-export default function IngredientsPane({ parentId, path }: Props) {
+export const IngredientsSidebar: FC<Props> = ({ parentId, path }: Props) => {
   const supabase = useSupabaseBrowser()
   const { data: ingredients, error } = useQuery(
     getIngredientsByCategory(supabase, parentId),
   )
   const pathString = path.join('/')
+  const items =
+    ingredients?.map(({ ingredient }) => ({
+      title: ingredient?.name ?? '',
+      href: `/cooking/cook/ingredients/${pathString}/${ingredient?.id}`,
+    })) ?? []
 
   return (
     <React.Fragment>
-      {ingredients &&
-        ingredients?.map(
-          ({ ingredient }) =>
-            ingredient && (
-              <GridItem xs={3} key={ingredient.id}>
-                <Card className="">
-                  <Card.Link
-                    href={`/cooking/cook/ingredients/${pathString}/${ingredient.id}`}
-                  >
-                    {ingredient.name}
-                  </Card.Link>
-                </Card>
-              </GridItem>
-            ),
-        )}
+      <StackedList items={items} emptyText="No ingredients in this category." />
     </React.Fragment>
   )
 }

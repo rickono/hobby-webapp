@@ -1,3 +1,4 @@
+
 export type Json =
   | string
   | number
@@ -405,16 +406,19 @@ export type Database = {
       culinary_ingredient: {
         Row: {
           created_at: string
+          fts: unknown | null
           id: number
           name: string
         }
         Insert: {
           created_at?: string
+          fts?: unknown | null
           id?: number
           name: string
         }
         Update: {
           created_at?: string
+          fts?: unknown | null
           id?: number
           name?: string
         }
@@ -422,21 +426,18 @@ export type Database = {
       }
       culinary_ingredient_category: {
         Row: {
-          category: number
+          category: number | null
           created_at: string
-          id: number
           ingredient: number
         }
         Insert: {
-          category: number
+          category?: number | null
           created_at?: string
-          id?: number
           ingredient: number
         }
         Update: {
-          category?: number
+          category?: number | null
           created_at?: string
-          id?: number
           ingredient?: number
         }
         Relationships: [
@@ -459,20 +460,34 @@ export type Database = {
       culinary_recipe: {
         Row: {
           created_at: string
+          description: string | null
           id: number
           name: string
+          source: number | null
         }
         Insert: {
           created_at?: string
+          description?: string | null
           id?: number
           name: string
+          source?: number | null
         }
         Update: {
           created_at?: string
+          description?: string | null
           id?: number
           name?: string
+          source?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "culinary_recipe_source_fkey"
+            columns: ["source"]
+            isOneToOne: false
+            referencedRelation: "culinary_recipe_source"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       culinary_recipe_ingredient: {
         Row: {
@@ -536,25 +551,32 @@ export type Database = {
         Row: {
           author: string | null
           created_at: string
+          full_name: string | null
           id: number
           name: string
+          type: Database["public"]["Enums"]["culinary_source"] | null
         }
         Insert: {
           author?: string | null
           created_at?: string
+          full_name?: string | null
           id?: number
           name: string
+          type?: Database["public"]["Enums"]["culinary_source"] | null
         }
         Update: {
           author?: string | null
           created_at?: string
+          full_name?: string | null
           id?: number
           name?: string
+          type?: Database["public"]["Enums"]["culinary_source"] | null
         }
         Relationships: []
       }
       culinary_unit: {
         Row: {
+          abbreviation: string | null
           created_at: string
           id: number
           name: string
@@ -562,6 +584,7 @@ export type Database = {
           type: Database["public"]["Enums"]["culinary_unit_type"] | null
         }
         Insert: {
+          abbreviation?: string | null
           created_at?: string
           id?: number
           name: string
@@ -569,6 +592,7 @@ export type Database = {
           type?: Database["public"]["Enums"]["culinary_unit_type"] | null
         }
         Update: {
+          abbreviation?: string | null
           created_at?: string
           id?: number
           name?: string
@@ -800,7 +824,29 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      search_ingredients_by_name: {
+        Args: {
+          prefix: string
+        }
+        Returns: {
+          created_at: string
+          fts: unknown | null
+          id: number
+          name: string
+        }[]
+      }
+      unaccent: {
+        Args: {
+          "": string
+        }
+        Returns: string
+      }
+      unaccent_init: {
+        Args: {
+          "": unknown
+        }
+        Returns: unknown
+      }
     }
     Enums: {
       brewer_type: "percolation" | "immersion" | "hybrid"
@@ -811,6 +857,7 @@ export type Database = {
         | "immersion"
         | "release"
         | "finish"
+      culinary_source: "book" | "website"
       culinary_unit_type: "volume" | "weight"
       dining_meal: "breakfast" | "lunch" | "dinner" | "brunch"
       dining_menus:

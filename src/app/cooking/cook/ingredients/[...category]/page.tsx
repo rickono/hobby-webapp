@@ -1,39 +1,66 @@
 import { SimpleLayout } from '@/components/SimpleLayout'
-import { Card } from '@/components/Card'
 import { Grid, GridItem } from '@/components/Grid'
-import Input from '@/components/Input'
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import {
-  getIngredients,
-  getIngredientsInCategory,
-  getRootIngredients,
-} from '@/lib/queries'
-import { useEffect, useState } from 'react'
-import { Ingredient } from '@/lib/queries'
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+  useQuery,
+} from '@tanstack/react-query'
+import { cookies } from 'next/headers'
+import useSupabaseServer from '@/utils/supabase-server'
+import { prefetchQuery } from '@supabase-cache-helpers/postgrest-react-query'
+import {
+  getIngredientNameById,
+  getIngredientNameByIds,
+  getIngredientsByCategory,
+} from '@/queries/cooking'
+import IngredientsPane from './IngredientsPane'
+import { IngredientsBreadcrumbs } from './IngredientsBreadcrumbs'
+import { Flex } from '@/components/Flex'
+import { StackedList } from '@/components/StackedList'
+import { IngredientsSidebar } from './IngredientsSidebar'
+import { Typography } from '@/components/Typography'
 
-export default async function Page() {
-  const ingredients = await getIngredients()
+export default async function Page({
+  params: { category },
+}: {
+  params: { category: string[] }
+}) {
+  const queryClient = new QueryClient()
+  const cookieStore = cookies()
+  const supabase = useSupabaseServer(cookieStore)
+  const parent = category.at(-1)
+  const parentId = parent ? parseInt(parent) : 1
+
+  if (parent) {
+    await prefetchQuery(
+      queryClient,
+      getIngredientsByCategory(supabase, parentId),
+    )
+  }
+  const categoryIds = category.map((id) => parseInt(id))
+  await prefetchQuery(
+    queryClient,
+    getIngredientNameByIds(supabase, categoryIds),
+  )
+  const { data: parentCategory } = await getIngredientNameById(
+    supabase,
+    parentId,
+  )
 
   return (
     <SimpleLayout title="Ingredients" intro="Explore recipes or ingredients.">
-      {/* <Input
-        type="text"
-        name="ingredient-search"
-        label="Search all ingredients"
-        leading={<MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />}
-        onChange={() => {
-          handleSearch()
-        }}
-      /> */}
-      <Grid className="mt-12">
-        {ingredients.map((ingredient) => (
-          <GridItem xs={6} key={ingredient.id}>
-            <Card className="capitalize">
-              <Card.Title href="/">{ingredient.name}</Card.Title>
-            </Card>
-          </GridItem>
-        ))}
-      </Grid>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <Flex>
+          <IngredientsBreadcrumbs categoryIds={categoryIds} />
+          <Typography variant="h2">{parentCategory?.name}</Typography>
+          <Grid>
+            <GridItem xs={3}>
+              <IngredientsSidebar parentId={parentId} path={category} />
+            </GridItem>
+          </Grid>
+        </Flex>
+      </HydrationBoundary>
     </SimpleLayout>
   )
 }

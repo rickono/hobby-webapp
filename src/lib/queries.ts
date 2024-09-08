@@ -218,12 +218,13 @@ export async function getIngredients(): Promise<Ingredient[]> {
 
 export async function getRootIngredients() {
   const supabase = createClient()
-  const res = await supabase
+  const { data, error } = await supabase
     .from('culinary_ingredient_category')
     .select(`ingredient ( id, name )`)
     .is('category', null)
     .returns<{ ingredient: Ingredient }[]>()
-  return res.data?.map(({ ingredient }) => ingredient)
+  if (!data || error) return []
+  return data?.map(({ ingredient }) => ingredient)
 }
 
 export async function getIngredientsInCategory(category: number) {
@@ -233,10 +234,21 @@ export async function getIngredientsInCategory(category: number) {
     .select(`ingredient ( id, name )`)
     .eq('category', category)
     .returns<{ ingredient: Ingredient }[]>()
-  return res.data?.map(({ ingredient }) => ingredient)
+  return res.data?.map(({ ingredient }) => ingredient) ?? []
+}
+
+export async function getIngredientCategories() {
+  const supabase = createClient()
+  const { data, error } = await supabase
+    .from('culinary_ingredient_category')
+    .select('*')
+    .returns<IngredientCategories[]>()
+  if (!data || error) return []
+  return data
 }
 
 export type Ingredient = Tables<'culinary_ingredient'>
+export type IngredientCategories = Tables<'culinary_ingredient_category'>
 
 export type TableNames = keyof Database['public']['Tables']
 
