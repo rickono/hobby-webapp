@@ -1,21 +1,39 @@
 import { FC } from 'react'
 
-interface Step {
+export interface Step {
   name: string
   href: string
   status: 'complete' | 'current' | 'upcoming'
+  id: string
 }
 
 interface Props {
   steps: Step[]
 }
 
+export const getStepStatus = (
+  stepId: string,
+  steps: Step[],
+  currentStepId: string,
+): 'complete' | 'current' | 'upcoming' => {
+  if (stepId === currentStepId) {
+    return 'current'
+  }
+  const currentStepIndex = steps.findIndex((step) => step.id === currentStepId)
+  const stepIndex = steps.findIndex((step) => step.id === stepId)
+
+  if (stepIndex === -1 || currentStepIndex === -1) {
+    return 'upcoming'
+  }
+
+  return stepIndex > currentStepIndex ? 'upcoming' : 'complete'
+}
+
 export const ProgressBullets: FC<Props> = ({ steps }) => {
   return (
     <nav aria-label="Progress" className="flex items-center justify-center">
       <p className="text-sm font-medium">
-        Step {steps.findIndex((step) => step.status === 'current') + 1} of{' '}
-        {steps.length}
+        {steps.find((step) => step.status === 'current')?.name}
       </p>
       <ol role="list" className="ml-8 flex items-center space-x-5">
         {steps.map((step) => (

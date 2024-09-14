@@ -231,7 +231,7 @@ function AddAwards({ control, errors, setValue, getValues }: AddAwardsProps) {
       />
       {selectedType && (
         <AddAward
-          awardId={selectedType.value}
+          awardId={selectedType.value ?? 0}
           addAward={(award: AwardInfo) =>
             setValue('awards', [...(getValues('awards') || []), award])
           }
@@ -316,7 +316,7 @@ function AddLaListe({ onSave }: AddLaListeProps) {
         onChange={(value) => {
           setDistinction(value)
           if (value.value !== 'top_1000') {
-            setLaListeInfo({ ...laListeInfo, distinction: value.value })
+            setLaListeInfo({ ...laListeInfo, distinction: value.value! })
           }
         }}
       />
@@ -367,7 +367,7 @@ function AddFiftyBest({ onSave }: AddFiftyBestProps) {
         }))}
         onChange={(value) => {
           setList(value)
-          setFiftyBestInfo({ ...fiftyBestInfo, list: value.value })
+          setFiftyBestInfo({ ...fiftyBestInfo, list: value.value! })
         }}
       />
       {list.value !== 'discovery' && (
@@ -386,7 +386,6 @@ function AddFiftyBest({ onSave }: AddFiftyBestProps) {
     </>
   )
 }
-
 
 function michelinRadioClassName({
   active,

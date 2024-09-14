@@ -1,6 +1,6 @@
 'use client'
 
-import { FormSection } from '@/components/FormLayout'
+import { FormButtons, FormRow, FormSection } from '@/components/FormLayout'
 import Input from '@/components/Input'
 import Select from '@/components/Select'
 import TextArea from '@/components/TextArea'
@@ -8,15 +8,22 @@ import {
   Control,
   Controller,
   FieldValues,
+  SubmitHandler,
+  useForm,
   UseFormGetValues,
   UseFormSetValue,
   UseFormWatch,
 } from 'react-hook-form'
 import { UseFormRegister } from 'react-hook-form'
-import { FC, useState } from 'react'
-import { NewRecipeForm, NewRecipeIngredient } from './RecipeForm'
+import { FC, useEffect, useState } from 'react'
 import useSupabaseBrowser from '@/utils/supabase-browser'
-import { getSources, getUnits } from '@/queries/cooking'
+import {
+  getRecipeById,
+  getRecipeWithIngredientsById,
+  getSources,
+  getUnits,
+  insertRecipeIngredient,
+} from '@/queries/cooking'
 import { useQuery } from '@supabase-cache-helpers/postgrest-react-query'
 import { Combobox } from '@/components/Combobox'
 import { IngredientInput } from '@/app/cooking/components/IngredientInput'
@@ -24,15 +31,18 @@ import { Tables } from '@/types/supabase'
 import Toggle from '@/components/Toggle'
 import { Flex } from '@/components/Flex'
 import { Button } from '@/components/Button'
-import { RecipeIngredientsDisplay } from './RecipeIngredientsDisplay'
+import {
+  useParams,
+  usePathname,
+  useRouter,
+  useSearchParams,
+} from 'next/navigation'
+import { Divider } from '@/components'
+import { PlusIcon } from '@heroicons/react/20/solid'
+import { Card } from '@/components/Card'
+import { createQueryString } from '@/lib/util'
 
-interface Props {
-  register: UseFormRegister<NewRecipeForm>
-  control: Control<NewRecipeForm, any>
-  getValues: UseFormGetValues<NewRecipeForm>
-  setValue: UseFormSetValue<NewRecipeForm>
-  watch: UseFormWatch<NewRecipeForm>
-}
+interface Props {}
 
 const DEFAULT_INGREDIENT = {
   displayString: '',
@@ -40,98 +50,142 @@ const DEFAULT_INGREDIENT = {
   quantity: '',
 }
 
-export const RecipeIngredients: FC<Props> = ({
-  setValue,
-  getValues,
-  watch,
-}) => {
+export interface RecipeIngredientForm {
+  recipe: number
+  ingredient: number
+  display_name?: string
+  optional?: boolean
+  unit?: number
+  quantity?: number
+}
+
+export const RecipeIngredients: FC<Props> = ({}) => {
   const supabase = useSupabaseBrowser()
+  const searchParams = useSearchParams()
+  const pathname = usePathname()
+  const router = useRouter()
   const { data: sourcesResponse } = useQuery(getSources(supabase))
   const { data: unitsResponse } = useQuery(getUnits(supabase))
-  const sources = sourcesResponse ?? []
   const units = unitsResponse ?? []
 
-  const [currentRecipeIngredient, setCurrentRecipeIngredient] = useState<{
-    ingredient?: Tables<'culinary_ingredient'>
-    displayString: string
-    optional: boolean
-    quantity: string
-    unit?: Tables<'culinary_unit'>
-  }>(DEFAULT_INGREDIENT)
-  const [currentIngredient, setCurrentIngredient] =
-    useState<Tables<'culinary_ingredient'> | null>(null)
+  const { control, register, reset, watch, handleSubmit, setValue } =
+    useForm<RecipeIngredientForm>()
 
-  const formIngredients = watch('ingredients') ?? []
+  const recipeId = parseInt(searchParams.get('recipe') ?? '')
+  const [selectedIngredient, setIngredient] =
+    useState<Tables<'culinary_ingredient'> | null>(null)
+  const { data: dbRecipe } = useQuery(
+    getRecipeWithIngredientsById(supabase, recipeId),
+  )
+
+  const [recipe, setRecipe] = useState(dbRecipe)
+  useEffect(() => {
+    if (dbRecipe) {
+      setRecipe(dbRecipe)
+    }
+  }, [dbRecipe])
+
+  const onSubmit: SubmitHandler<RecipeIngredientForm> = async (data) => {
+    await insertRecipeIngredient(supabase, { ...data, recipe: recipeId })
+    reset()
+    setIngredient(null)
+    const { data: dbRecipe } = await getRecipeWithIngredientsById(
+      supabase,
+      recipeId,
+    )
+    setRecipe(dbRecipe)
+  }
+
+  const onNext = () => {
+    router.push(
+      pathname + '?' + createQueryString(searchParams, [['step', 'review']]),
+    )
+  }
 
   return (
-    <FormSection title="Ingredients" subtitle="">
-      <IngredientInput
-        selected={currentIngredient}
-        setSelected={(ingredient) => {
-          setCurrentIngredient(ingredient)
-          if (ingredient) {
-            setCurrentRecipeIngredient({
-              ...currentRecipeIngredient,
-              ingredient,
-            })
-          }
-        }}
-      />
-      <Input
-        type="number"
-        name="ingredient"
-        label="Quantity"
-        span={1}
-        value={currentRecipeIngredient.quantity ?? 0}
-        onChange={(e) =>
-          setCurrentRecipeIngredient({
-            ...currentRecipeIngredient,
-            quantity: e.target.value,
-          })
-        }
-      />
-      <Select
-        label="Unit"
-        onChange={({ value }) => {
-          setCurrentRecipeIngredient({
-            ...currentRecipeIngredient,
-            unit: value,
-          })
-        }}
-        options={units.map((unit) => ({
-          label: unit.name,
-          value: unit,
-        }))}
-        value={{
-          label: currentRecipeIngredient.unit?.name,
-          value: currentRecipeIngredient.unit,
-        }}
-      />
-      <Input span={3} type="text" name="displayName" label="Display as" />
-      <div className="relative h-full">
-        <Button
-          variant="primary"
-          className="absolute bottom-0"
-          onClick={() => {
-            const { ingredient, quantity } = currentRecipeIngredient
-            if (ingredient) {
-              setValue('ingredients', [
-                ...formIngredients,
-                {
-                  ...currentRecipeIngredient,
-                  ingredient,
-                  quantity: parseFloat(quantity),
-                },
-              ])
-              setCurrentRecipeIngredient(DEFAULT_INGREDIENT)
-              setCurrentIngredient(null)
-            }
-          }}
-        >
-          Add
-        </Button>
-      </div>
-      <RecipeIngredientsDisplay formIngredients={formIngredients} />
-    </FormSection>
+    <div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <FormSection title="Ingredients" subtitle="">
+          <IngredientInput
+            selected={selectedIngredient}
+            onChange={(ingredient) => {
+              setIngredient(ingredient)
+              if (ingredient) {
+                setValue('ingredient', ingredient?.id)
+              }
+            }}
+            span={3}
+          />
+          <Input
+            name="quantity"
+            label="Quantity"
+            type="number"
+            step={0.1}
+            register={register}
+          />
+          <Controller
+            control={control}
+            name="unit"
+            render={({ field }) => (
+              <Select
+                label="Unit"
+                options={
+                  units?.map((unit) => ({
+                    label: unit.name,
+                    value: unit,
+                  })) ?? []
+                }
+                onChange={(option) => field.onChange(option.value?.id)}
+                value={
+                  watch('unit')
+                    ? undefined
+                    : { label: 'Please select an option', value: undefined }
+                }
+              />
+            )}
+          />
+          <Input
+            name="display_name"
+            label="Display as"
+            type="text"
+            placeholder="Ex: 2 tbsp garlic (about 4 cloves)"
+            span={3}
+            register={register}
+          />
+          <FormRow>
+            <Divider
+              button={{
+                text: 'Add',
+                icon: (
+                  <PlusIcon
+                    aria-hidden="true"
+                    className="-ml-1 -mr-0.5 h-5 w-5 text-gray-400"
+                  />
+                ),
+                type: 'submit',
+              }}
+            />
+          </FormRow>
+          {recipe && (
+            <FormRow key={recipe.id}>
+              <Card>
+                <Card.Title>{recipe.name}</Card.Title>
+                <ul>
+                  {recipe.culinary_recipe_ingredient.map((ingredient) => (
+                    <li key={ingredient.ingredient?.name}>
+                      <span>
+                        {ingredient.display_name ||
+                          `${ingredient.quantity} ${ingredient.unit?.name} ${ingredient.ingredient?.name}`}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </FormRow>
+          )}
+        </FormSection>
+      </form>
+      <FormButtons saveText="Next" onOk={onNext} />
+    </div>
   )
 }

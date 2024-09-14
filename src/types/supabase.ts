@@ -462,24 +462,40 @@ export type Database = {
           created_at: string
           description: string | null
           id: number
+          in_progress: boolean
+          ingredient: number | null
           name: string
+          procedure: string | null
           source: number | null
         }
         Insert: {
           created_at?: string
           description?: string | null
           id?: number
+          in_progress?: boolean
+          ingredient?: number | null
           name: string
+          procedure?: string | null
           source?: number | null
         }
         Update: {
           created_at?: string
           description?: string | null
           id?: number
+          in_progress?: boolean
+          ingredient?: number | null
           name?: string
+          procedure?: string | null
           source?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "culinary_recipe_ingredient_fkey"
+            columns: ["ingredient"]
+            isOneToOne: false
+            referencedRelation: "culinary_ingredient"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "culinary_recipe_source_fkey"
             columns: ["source"]
@@ -493,7 +509,7 @@ export type Database = {
         Row: {
           alternative: Json | null
           created_at: string
-          display_name: string
+          display_name: string | null
           id: number
           ingredient: number
           optional: boolean
@@ -504,7 +520,7 @@ export type Database = {
         Insert: {
           alternative?: Json | null
           created_at?: string
-          display_name: string
+          display_name?: string | null
           id?: number
           ingredient: number
           optional?: boolean
@@ -515,7 +531,7 @@ export type Database = {
         Update: {
           alternative?: Json | null
           created_at?: string
-          display_name?: string
+          display_name?: string | null
           id?: number
           ingredient?: number
           optional?: boolean

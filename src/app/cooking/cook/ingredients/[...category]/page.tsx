@@ -51,7 +51,7 @@ export default async function Page({
   return (
     <SimpleLayout title="Ingredients" intro="Explore recipes or ingredients.">
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <Flex>
+        <Flex dir="col">
           <IngredientsBreadcrumbs categoryIds={categoryIds} />
           <Typography variant="h2">{parentCategory?.name}</Typography>
           <Grid>
