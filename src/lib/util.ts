@@ -1,7 +1,9 @@
 import { ReadonlyURLSearchParams } from 'next/navigation'
 
-export function classNames(...classes: Array<string | boolean | undefined>) {
-  return classes.filter(Boolean).join(' ')
+export function classNames(
+  ...classes: Array<string | string[] | boolean | undefined>
+) {
+  return classes.flat().filter(Boolean).join(' ')
 }
 
 export const createQueryString = (

@@ -1,14 +1,20 @@
-import clsx from 'clsx'
+import clsx, { ClassValue } from 'clsx'
 import { classNames } from '@/lib/util'
 
 type Props = {
   children?: React.ReactNode
   className?: string
+  gap?: number
 }
 
-export function Grid({ children, className }: Props) {
+export function Grid({ children, className, gap }: Props) {
+  const gapClass = `gap-${gap}`
   return (
-    <div className={clsx('grid grid-cols-12 gap-4', className)}>{children}</div>
+    <div
+      className={clsx('grid grid-cols-12 gap-4', gap && gapClass, className)}
+    >
+      {children}
+    </div>
   )
 }
 

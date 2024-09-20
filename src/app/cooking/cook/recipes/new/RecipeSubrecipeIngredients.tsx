@@ -116,6 +116,7 @@ export const RecipeSubrecipeIngredients: FC = () => {
             name="quantity"
             label="Quantity"
             type="number"
+            step={0.01}
             register={register}
           />
           <Controller

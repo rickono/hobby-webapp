@@ -5,9 +5,11 @@ import {
   Join,
   Recipe,
   recipeIncludes,
+  RecipeIngredient,
   RecipeJoins,
   Response,
 } from './types'
+import { RecipeIngredients } from '@/app/cooking/cook/recipes/new/RecipeIngredients'
 
 export const getIngredientsByCategory = (
   client: TypedSupabaseClient,
@@ -172,6 +174,10 @@ export const getRecipes = <Joins extends RecipeJoins = never>(
 ) => {
   const includeIngredient = recipeIncludes(include, 'ingredient')
   const includeSource = recipeIncludes(include, 'source')
+  const includeRecipeIngredients = recipeIncludes(
+    include,
+    'culinary_recipe_ingredient',
+  )
 
   const qb = client
     .from('culinary_recipe')
@@ -180,8 +186,59 @@ export const getRecipes = <Joins extends RecipeJoins = never>(
       *
       ${includeIngredient ? ', ingredient ( * )' : ''}
       ${includeSource ? ', source ( * )' : ''}
+      ${includeRecipeIngredients ? ', culinary_recipe_ingredient ( ingredient:culinary_ingredient (name), unit:culinary_unit (name), quantity, display_name )' : ''}
       `,
     )
-    .returns<Join<Recipe, (typeof include)[number]>[]>()
+    .returns<
+      Join<
+        Recipe,
+        (typeof include)[number],
+        {
+          culinary_recipe_ingredient: Join<
+            RecipeIngredient,
+            'ingredient' | 'unit'
+          >[]
+        }
+      >[]
+    >()
+  return qb
+}
+
+export const getRecipe = <Joins extends RecipeJoins = never>(
+  client: TypedSupabaseClient,
+  id: number,
+  include: Joins[] = [],
+) => {
+  const includeIngredient = recipeIncludes(include, 'ingredient')
+  const includeSource = recipeIncludes(include, 'source')
+  const includeRecipeIngredients = recipeIncludes(
+    include,
+    'culinary_recipe_ingredient',
+  )
+
+  const qb = client
+    .from('culinary_recipe')
+    .select(
+      `
+      *
+      ${includeIngredient ? ', ingredient ( * )' : ''}
+      ${includeSource ? ', source ( * )' : ''}
+      ${includeRecipeIngredients ? ', culinary_recipe_ingredient ( ingredient:culinary_ingredient (*), unit:culinary_unit (*), quantity, display_name )' : ''}
+      `,
+    )
+    .eq('id', id)
+    .returns<
+      Join<
+        Recipe,
+        (typeof include)[number],
+        {
+          culinary_recipe_ingredient: Join<
+            RecipeIngredient,
+            'ingredient' | 'unit'
+          >[]
+        }
+      >[]
+    >()
+    .maybeSingle()
   return qb
 }

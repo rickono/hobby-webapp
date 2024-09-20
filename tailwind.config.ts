@@ -103,5 +103,6 @@ export default {
     '2xl:col-span-10',
     '2xl:col-span-11',
     '2xl:col-span-12',
+    'gap-8',
   ],
 } satisfies Config

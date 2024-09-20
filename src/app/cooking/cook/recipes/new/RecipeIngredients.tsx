@@ -120,7 +120,7 @@ export const RecipeIngredients: FC<Props> = ({}) => {
             name="quantity"
             label="Quantity"
             type="number"
-            step={0.1}
+            step={0.01}
             register={register}
           />
           <Controller
